@@ -1,7 +1,7 @@
-<<<<<<< Updated upstream
 # eloquentai_test
 
 Node v23.11.x
+Python 3.9.6
 =======
 # RAG Chat Application
 
@@ -21,14 +21,8 @@ A full-stack RAG (Retrieval-Augmented Generation) chat application with FastAPI 
 - Docker and Docker Compose installed
 - Git (to clone the repository)
 
-### 1. Clone and Setup
 
-```bash
-git clone <repository-url>
-cd eloquentai_test
-```
-
-### 2. Start All Services
+### 1. Start All Services
 
 ```bash
 docker-compose up --build
@@ -39,7 +33,10 @@ This will start:
 - **FastAPI Backend** on port 8000
 - **React Frontend** on port 3000
 
-### 3. Access the Application
+- If it not start, work with two terminals
+
+
+### 2. Access the Application
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
@@ -71,6 +68,9 @@ cp config.env.example .env
 # Edit .env with your database settings
 ```
 
+### or expor tem manually by the 
+export DB_HOST=...
+
 5. **Start PostgreSQL database** (using Docker):
 ```bash
 docker run --name rag_chat_db -e POSTGRES_DB=rag_chat -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:15-alpine
@@ -78,7 +78,7 @@ docker run --name rag_chat_db -e POSTGRES_DB=rag_chat -e POSTGRES_USER=postgres 
 
 6. **Run the API**:
 ```bash
-uvicorn main:app --reload
+uvicorn main:app
 ```
 
 ### Frontend Setup
