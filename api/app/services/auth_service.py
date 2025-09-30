@@ -3,6 +3,7 @@ from pydantic import EmailStr
 import uuid
 
 class AuthService:
+    # Para depois: Utilizar como base Service
     def __init__(self):
         self.fake_users_db = {
             "user@example.com": {
