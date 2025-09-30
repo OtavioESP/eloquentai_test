@@ -1,3 +1,9 @@
+# For initialize the whole application run the:
+
+```shell
+    docker-compose up -d
+```
+
 # Database Migrations
 
 This directory contains PostgreSQL database migrations for the RAG chat application.
@@ -42,6 +48,8 @@ export DB_PORT=5432
 export DB_NAME=rag_chat
 export DB_USER=postgres
 export DB_PASSWORD=your_password
+export PINECONE_API_KEY=API_KEY
+export PINECONE_INDEX=API_INDEX
 ```
 
 ### Commands
@@ -75,6 +83,7 @@ python migrations/run_migrations.py down 001_initial_schema.sql
 - **Migration Tracking**: Tracks executed migrations to prevent re-running
 
 ## Database Setup
+# if done correctly the aplication itself will generate the migrations and database, if not:
 
 1. Create a PostgreSQL database:
 ```sql

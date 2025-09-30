@@ -1,7 +1,3 @@
-"""
-Migration utility for automatic migration execution on startup
-"""
-
 import os
 import sys
 import psycopg2
@@ -10,14 +6,11 @@ from typing import List
 import logging
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Database configuration
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'localhost'),
     'port': os.getenv('DB_PORT', '5432'),
@@ -27,7 +20,6 @@ DB_CONFIG = {
 }
 
 def get_connection():
-    """Get database connection"""
     try:
         return psycopg2.connect(**DB_CONFIG)
     except psycopg2.Error as e:
@@ -35,7 +27,6 @@ def get_connection():
         raise e
 
 def create_migrations_table(conn):
-    """Create migrations tracking table if it doesn't exist"""
     with conn.cursor() as cur:
         cur.execute("""
             CREATE TABLE IF NOT EXISTS migrations (
@@ -47,24 +38,20 @@ def create_migrations_table(conn):
         conn.commit()
 
 def get_executed_migrations(conn) -> List[str]:
-    """Get list of executed migrations"""
     with conn.cursor() as cur:
         cur.execute("SELECT filename FROM migrations ORDER BY id")
         return [row[0] for row in cur.fetchall()]
 
 def mark_migration_executed(conn, filename: str):
-    """Mark migration as executed"""
     with conn.cursor() as cur:
         cur.execute("INSERT INTO migrations (filename) VALUES (%s)", (filename,))
         conn.commit()
 
 def get_migration_files() -> List[Path]:
-    """Get all migration files sorted by name"""
     migrations_dir = Path(__file__).parent / "migrations"
     return sorted([f for f in migrations_dir.glob("*.sql") if f.name != "run_migrations.py"])
 
 def run_migration(conn, migration_file: Path):
-    """Run a single migration file"""
     logger.info(f"Running migration: {migration_file.name}")
     
     with open(migration_file, 'r') as f:
@@ -82,14 +69,10 @@ def run_migration(conn, migration_file: Path):
             raise e
 
 def run_pending_migrations():
-    """Run all pending migrations"""
     try:
         conn = get_connection()
         try:
-            # Create migrations table if it doesn't exist
             create_migrations_table(conn)
-            
-            # Get executed and pending migrations
             executed = get_executed_migrations(conn)
             migration_files = get_migration_files()
             pending = [f for f in migration_files if f.name not in executed]
@@ -100,7 +83,6 @@ def run_pending_migrations():
             
             logger.info(f"Found {len(pending)} pending migrations")
             
-            # Run each pending migration
             for migration_file in pending:
                 run_migration(conn, migration_file)
             
@@ -127,26 +109,9 @@ def check_database_connection():
         return False
 
 def auto_migrate():
-    """
-    Main function to run migrations automatically
-    Returns True if successful, False otherwise
-    """
     logger.info("Starting automatic migration check...")
-    
-    # Check database connection first
     if not check_database_connection():
         logger.error("Cannot connect to database. Please check your database configuration.")
         return False
     
-    # Run pending migrations
     return run_pending_migrations()
-
-if __name__ == "__main__":
-    # Test migration functionality
-    success = auto_migrate()
-    if success:
-        print("✓ Auto-migration completed successfully")
-        sys.exit(0)
-    else:
-        print("✗ Auto-migration failed")
-        sys.exit(1)

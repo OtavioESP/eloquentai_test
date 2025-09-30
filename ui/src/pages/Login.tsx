@@ -18,23 +18,13 @@ const Login = () => {
       const data = await makeLogin(username, password);
       console.log("Login successful:", data);
       const userUUID = data.user.id;
-      navigate(`/chat/${userUUID}`, { replace: true });
+      const chatUUID = data.chat;
+      navigate(`/chat/${userUUID}/${chatUUID}`, { replace: true });
 
     } catch (err: any) {
       console.error("Login error:", err);
+        toast.error("Login failed. Please try again.",);
       
-      // Handle different types of errors
-      if (err.response?.status === 401) {
-        toast.error("Invalid username or password. Please try again.");
-      } else if (err.response?.status === 400) {
-        toast.error("Please check your input and try again.");
-      } else if (err.code === 'ECONNABORTED') {
-        toast.error("Request timed out. Please try again.");
-      } else if (!err.response) {
-        toast.error("Network error. Please check your connection and try again.");
-      } else {
-        toast.error("Login failed. Please try again.");
-      }
     }
   };
 
@@ -43,23 +33,13 @@ const Login = () => {
       const data = await unloggedEntry();
       console.log("Unlogged entry successful:", data);
       const userUUID = data.user.id;
-      navigate(`/chat/${userUUID}`, { replace: true });
+      const chatUUID = data.chat;
+      navigate(`/chat/${userUUID}/${chatUUID}`, { replace: true });
 
     } catch (err: any) {
-      console.error("Unlogged entry error:", err);
-      
-      // Handle different types of errors
-      if (err.response?.status === 401) {
-        toast.error("Unable to continue without login. Please try logging in.");
-      } else if (err.response?.status === 400) {
-        toast.error("Invalid request. Please try again.");
-      } else if (err.code === 'ECONNABORTED') {
-        toast.error("Request timed out. Please try again.");
-      } else if (!err.response) {
-        toast.error("Network error. Please check your connection and try again.");
-      } else {
-        toast.error("Unable to continue without login. Please try again.");
-      }
+      console.error("Unlogged entry error:", err);     
+      toast.error("Unable to continue without login. Please try again.");
+
     }
   }
 
