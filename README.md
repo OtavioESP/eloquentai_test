@@ -5,7 +5,19 @@ Python 3.9.6
 =======
 # RAG Chat Application
 
+
 A full-stack RAG (Retrieval-Augmented Generation) chat application with FastAPI backend and React frontend.
+
+In my view, the ideal flow for this project should be as follows:
+The user, the model, the context, and the chat with its main purpose should be saved in a PostgreSQL database. After that, the chats and messages should be stored in a NoSQL database, preferably MongoDB, where conversations, as they grow, can be saved in different collections. This ensures faster access and greater flexibility for future modifications.
+
+For a better user experience, when a user logs in, the first chats, and the latest X messages should be loaded into a Reddis or some sort of Cache, so it can be easily accesses through the lifetime of the user in the application.
+
+Each user should always have associated with them the instances of the chats they access, and within those chats, the chat ID itself should be used to identify messages in MongoDB by timestamp.
+
+In my implementation, I chose to save messages in a single send/return cycle, which keeps the application more closed to message alterations and prior corrections, prioritizing speed and simplicity in development.
+
+The backend was structured using a standard FastAPI architecture, which resembles an MVC pattern, and employs an automatic migration system similar to Django’s. On startup, it checks a table that keeps track of which migrations have already been applied.
 
 ## 🏗️ Architecture
 
@@ -232,14 +244,6 @@ eloquentai_test/
 ├── docker-compose.yml    # Docker Compose configuration
 └── README.md            # This file
 ```
-
-## 🔒 Security Features
-
-- Password hashing with bcrypt
-- JWT token authentication
-- CORS middleware configuration
-- SQL injection prevention with parameterized queries
-- Environment variable configuration
 
 ## 🚀 Production Deployment
 
