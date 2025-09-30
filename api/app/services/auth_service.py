@@ -74,6 +74,6 @@ class AuthService:
             "success": True,
             "message": "Login successful",
             "user": {
-                "id": str(uuid.uuid4()),  # Make sure to convert UUID to string
+                "id": str(uuid.uuid4()),
             }
         }
